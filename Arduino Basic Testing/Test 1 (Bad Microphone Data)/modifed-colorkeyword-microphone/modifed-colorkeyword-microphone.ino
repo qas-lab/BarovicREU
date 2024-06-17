@@ -123,6 +123,10 @@ void loop()
               predict = ix;
             }
         }
+        /*
+          CODE AT THIS POINT MODIFIED FOR FUNCTIONALITY
+          -> LOOKS FOR THE KEYWORDS AND TURNS ON LED IF HEARD
+        */
         if(predict == 0 || predict == 2)
         {
           ei_printf("Guess: %s \n", result.classification[predict].label);
@@ -130,6 +134,7 @@ void loop()
         }
         else
         {
+          ei_printf("No Read");
           digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
         }
 
