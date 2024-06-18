@@ -136,7 +136,7 @@ void loop()
         }
         else
         {
-          ei_printf("No Read");
+          ei_printf("No Read \n");
           digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
         }
 #if EI_CLASSIFIER_HAS_ANOMALY == 1
