@@ -113,11 +113,18 @@ void loop()
             result.timing.dsp, result.timing.classification, result.timing.anomaly);
         ei_printf(": \n");
         /*
-        for (size_t ix = 0; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
-            ei_printf("    %s: %.5f\n", result.classification[ix].label,
-                      result.classification[ix].value);
-        }
+          CODE AT THIS POINT MODIFIED FOR FUNCTIONALITY
+          -> LOOKS FOR THE KEYWORDS AND TURNS ON LED IF HEARD
         */
+        int predict = 0;
+        for (size_t ix = 0; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) 
+        {
+            //ei_printf("    %s: %.5f\n", result.classification[ix].label, result.classification[ix].value);
+            if(result.classification[ix].value > result.classification[predict].value)
+            {
+              predict = ix;
+            }
+        }
         /*
           CODE AT THIS POINT MODIFIED FOR FUNCTIONALITY
           -> LOOKS FOR THE KEYWORDS AND TURNS ON LED IF HEARD
