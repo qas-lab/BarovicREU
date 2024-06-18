@@ -18,7 +18,7 @@ void setup() {
   analogWrite(ledBluePin, 255);
 
   // Print instructions to the serial monitor
-  Serial.println("Enter a number (1-7) to change the LED color:");
+  Serial.println("Enter a number (1-8) to change the LED color:");
   Serial.println("1 - Red");
   Serial.println("2 - Green");
   Serial.println("3 - Blue");
@@ -85,7 +85,7 @@ void loop() {
         break;
       default:
         // Invalid number, turn off the LED
-        Serial.println("Invalid number! Enter a number between 1 and 7.");
+        Serial.println("Invalid number! Enter a number between 1 and 8.");
         break;
     }
   }
