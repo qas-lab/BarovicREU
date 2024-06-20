@@ -1,7 +1,7 @@
 /*
   BLE_Peripheral.ino
 */
-#include <ArduinoBLE.h> // Include the ArduinoBLE library
+#include <ArduinoBLE.h>
 
 // Define the pin numbers for the RGB LED
 const int ledRedPin = 22;
@@ -15,8 +15,8 @@ const char* deviceServiceCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1
 // Variable to store the LED value
 int ledValue = 8;
 
-// Create a BLE service and characteristic
-BLEService ledService(deviceServiceUuid); 
+// Create BLE service and characteristics
+BLEService ledService(deviceServiceUuid);
 BLEByteCharacteristic ledCharacteristic(deviceServiceCharacteristicUuid, BLERead | BLEWrite);
 
 void setup() {
@@ -51,13 +51,13 @@ void setup() {
 }
 
 void loop() {
-  // Listen for BLE peripherals to connect
-  BLEDevice central = BLE.central();
+  BLEDevice central = BLE.central(); // Wait for a central device to connect
 
-  if (central) { // If a central device is connected
+  if (central) { // If a central device is found
     Serial.println("* Connected to central device!");
     Serial.print("* Device MAC address: ");
     Serial.println(central.address());
+    Serial.println(" ");
 
     // While the central device is connected
     while (central.connected()) {
@@ -67,6 +67,18 @@ void loop() {
         Serial.print("* Received value from central: ");
         Serial.println(ledValue);
         switchLED(ledValue); // Update LED based on received value
+      }
+
+      // Read user input from Serial Monitor to send to central
+      if (Serial.available() > 0) {
+        ledValue = Serial.parseInt();
+        if (ledValue >= 1 && ledValue <= 8) {
+          ledCharacteristic.writeValue((byte)ledValue); // Send value to central
+          Serial.print("* Sent value to central: ");
+          Serial.println(ledValue);
+        } else {
+          Serial.println("Invalid number! Enter a number between 1 and 8.");
+        }
       }
     }
 

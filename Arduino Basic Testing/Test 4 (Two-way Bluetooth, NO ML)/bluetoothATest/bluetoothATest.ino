@@ -1,7 +1,7 @@
 /*
   BLE_Central_Device.ino
 */
-#include <ArduinoBLE.h>       // Include the ArduinoBLE library
+#include <ArduinoBLE.h>
 
 // Define the pin numbers for the RGB LED
 const int ledRedPin = 22;
@@ -13,8 +13,9 @@ const char* deviceServiceUuid = "19b10000-e8f2-537e-4f6c-d104768a1214";
 const char* deviceServiceCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1214";
 
 // Variables to store the current and previous gesture values
+int ledValue2 = 8;
 int ledValue = 8;
-int oldLedValue = 8;   
+int oldLedValue = 8;
 
 void setup() {
   Serial.begin(9600);       // Start the serial communication
@@ -97,7 +98,7 @@ void controlPeripheral(BLEDevice peripheral) {
     return;
   }
 
-  // Get the characteristic we want to write to
+  // Get the characteristic we want to read from
   BLECharacteristic ledCharacteristic = peripheral.characteristic(deviceServiceCharacteristicUuid);
   
   // Check if the characteristic is found and writable
@@ -113,7 +114,13 @@ void controlPeripheral(BLEDevice peripheral) {
   
   // Continuously check for gestures while connected to the peripheral
   while (peripheral.connected()) {
-    // Read user input from Serial Monitor
+    if (ledCharacteristic.written()) {
+        ledValue2 = (int)ledCharacteristic.value(); // Get the new LED value
+        Serial.print("* Received value from peripheral: ");
+        Serial.println(ledValue2);
+        switchLED(ledValue2); // Update LED based on received value
+      }
+    // Read user input from Serial Monitor to send to peripheral
     if (Serial.available() > 0) {
       ledValue = Serial.parseInt();
       if (ledValue >= 1 && ledValue <= 8) {
@@ -134,3 +141,51 @@ void controlPeripheral(BLEDevice peripheral) {
   Serial.println("- Peripheral device disconnected!");
 }
 
+void switchLED(int incomingNumber)
+{
+   switch (incomingNumber) {
+      case 1: // Red
+        analogWrite(ledRedPin, 0);
+        Serial.println("Setting LED color to Red");
+        break;
+      case 2: // Green
+        analogWrite(ledGreenPin, 0);
+        Serial.println("Setting LED color to Green");
+        break;
+      case 3: // Blue
+        analogWrite(ledBluePin, 0);
+        Serial.println("Setting LED color to Blue");
+        break;
+      case 4: // Yellow (Red + Green)
+        analogWrite(ledRedPin, 0);
+        analogWrite(ledGreenPin, 0);
+        Serial.println("Setting LED color to Yellow (Red + Green)");
+        break;
+      case 5: // Cyan (Green + Blue)
+        analogWrite(ledGreenPin, 0);
+        analogWrite(ledBluePin, 0);
+        Serial.println("Setting LED color to Cyan (Green + Blue)");
+        break;
+      case 6: // Magenta (Red + Blue)
+        analogWrite(ledRedPin, 0);
+        analogWrite(ledBluePin, 0);
+        Serial.println("Setting LED color to Magenta (Red + Blue)");
+        break;
+      case 7: // White (Red + Green + Blue)
+        analogWrite(ledRedPin, 0);
+        analogWrite(ledGreenPin, 0);
+        analogWrite(ledBluePin, 0);
+        Serial.println("Setting LED color to White (Red + Green + Blue)");
+        break;
+      case 8:
+        analogWrite(ledRedPin, 255);
+        analogWrite(ledGreenPin, 255);
+        analogWrite(ledBluePin, 255);
+        Serial.println("Turning off the LED");
+        break;
+      default:
+        // Invalid number, turn off the LED
+        Serial.println("Invalid number! Enter a number between 1 and 8.");
+        break;
+    }
+}
