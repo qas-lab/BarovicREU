@@ -8,8 +8,11 @@ git clone https://github.com/qas-lab/BarovicREU.git
 ## Arduino
 IDE + CLI
 ## Edge Impulse
-IDE + CLI
-## 
+Website + CLI
+## Node.js
+TO DO
+## Arduino Nano 33 BLE Sense
+TO DO
 ----------
 ## Project Structure
 ```.
