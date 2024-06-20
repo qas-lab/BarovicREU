@@ -13,7 +13,7 @@ const char* deviceServiceUuid = "19b10000-e8f2-537e-4f6c-d104768a1214";
 const char* deviceServiceCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1214";
 
 // Variable to store the LED value
-int ledValue = 0;
+int ledValue = 8;
 
 // Create a BLE service and characteristic
 BLEService ledService(deviceServiceUuid); 
@@ -22,18 +22,16 @@ BLEByteCharacteristic ledCharacteristic(deviceServiceCharacteristicUuid, BLERead
 void setup() {
   Serial.begin(9600); // Start serial communication
   while (!Serial);    // Wait for the serial port to connect
-  
-  // Set the pin modes for the on-board LEDs
-  pinMode(LEDR, OUTPUT);
-  pinMode(LEDG, OUTPUT);
-  pinMode(LEDB, OUTPUT);
-  pinMode(LED_BUILTIN, OUTPUT);
-  
-  // Initialize the LEDs to off state
-  digitalWrite(LEDR, HIGH);
-  digitalWrite(LEDG, HIGH);
-  digitalWrite(LEDB, HIGH);
-  digitalWrite(LED_BUILTIN, LOW);
+
+  // Set the RGB LED pins as outputs:
+  pinMode(ledRedPin, OUTPUT);
+  pinMode(ledGreenPin, OUTPUT);
+  pinMode(ledBluePin, OUTPUT);
+
+  // Turn off all colors to start with:
+  analogWrite(ledRedPin, 255);
+  analogWrite(ledGreenPin, 255);
+  analogWrite(ledBluePin, 255);
 
   // Initialize the BLE module
   if (!BLE.begin()) {

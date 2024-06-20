@@ -13,13 +13,23 @@ const char* deviceServiceUuid = "19b10000-e8f2-537e-4f6c-d104768a1214";
 const char* deviceServiceCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1214";
 
 // Variables to store the current and previous gesture values
-int ledValue = 0;
-int oldLedValue = -1;   
+int ledValue = 8;
+int oldLedValue = 8;   
 
 void setup() {
   Serial.begin(9600);       // Start the serial communication
   while (!Serial);          // Wait for the serial port to connect
 
+  // Set the RGB LED pins as outputs:
+  pinMode(ledRedPin, OUTPUT);
+  pinMode(ledGreenPin, OUTPUT);
+  pinMode(ledBluePin, OUTPUT);
+
+  // Turn off all colors to start with:
+  analogWrite(ledRedPin, 255);
+  analogWrite(ledGreenPin, 255);
+  analogWrite(ledBluePin, 255);
+  
   // Initialize the BLE module
   if (!BLE.begin()) {
     Serial.println("* Starting Bluetooth® Low Energy module failed!");
