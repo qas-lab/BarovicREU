@@ -4,3 +4,9 @@
 ## Getting Started
 ```bash
 git clone TO DO
+```
+
+## Project Structure
+```.
+
+```
