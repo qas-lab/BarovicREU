@@ -13,9 +13,12 @@ const char* deviceServiceUuid = "19b10000-e8f2-537e-4f6c-d104768a1214";
 const char* deviceServiceCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1214";
 
 // Variables to store the current and previous gesture values
-int ledValue2 = 8;
-int ledValue = 8;
+int ledRead = 8;
+int ledWrite = 8;
 int oldLedValue = 8;
+
+BLEService ledService(deviceServiceUuid);
+BLEByteCharacteristic ledReadingCharactaristic(deviceServiceCharacteristicUuid, BLERead | BLEWrite);
 
 void setup() {
   Serial.begin(9600);       // Start the serial communication
@@ -99,14 +102,14 @@ void controlPeripheral(BLEDevice peripheral) {
   }
 
   // Get the characteristic we want to read from
-  BLECharacteristic ledCharacteristic = peripheral.characteristic(deviceServiceCharacteristicUuid);
+  BLECharacteristic ledWritingCharactaristic = peripheral.characteristic(deviceServiceCharacteristicUuid);
   
   // Check if the characteristic is found and writable
-  if (!ledCharacteristic) {
+  if (!ledWritingCharactaristic) {
     Serial.println("* Peripheral device does not have led_type characteristic!");
     peripheral.disconnect();
     return;
-  } else if (!ledCharacteristic.canWrite()) {
+  } else if (!ledWritingCharactaristic.canWrite()) {
     Serial.println("* Peripheral does not have a writable led_type characteristic!");
     peripheral.disconnect();
     return;
@@ -114,27 +117,28 @@ void controlPeripheral(BLEDevice peripheral) {
   
   // Continuously check for gestures while connected to the peripheral
   while (peripheral.connected()) {
-    if (ledCharacteristic.written()) {
-        ledValue2 = (int)ledCharacteristic.value(); // Get the new LED value
-        Serial.print("* Received value from peripheral: ");
-        Serial.println(ledValue2);
-        switchLED(ledValue2); // Update LED based on received value
+    // Check if the characteristic value has been written by the central device
+      if (ledReadingCharactaristic.valueUpdated()) {
+        ledRead = ledReadingCharactaristic.value(); // Get the new LED value
+        Serial.print("* Received value from central: ");
+        Serial.println(ledRead);
+        switchLED(ledRead); // Update LED based on received value
       }
     // Read user input from Serial Monitor to send to peripheral
     if (Serial.available() > 0) {
-      ledValue = Serial.parseInt();
-      if (ledValue >= 1 && ledValue <= 8) {
+      ledWrite = Serial.parseInt();
+      if (ledWrite >= 1 && ledWrite <= 8) {
         // Write the new gesture value if it has changed
-        if (oldLedValue != ledValue) {  
-          oldLedValue = ledValue;
+        if (oldLedValue != ledWrite) {  
+          oldLedValue = ledWrite;
           Serial.print("* Writing value to led_type characteristic: ");
-          Serial.println(ledValue);
-          ledCharacteristic.writeValue((byte)ledValue);
+          Serial.println(ledWrite);
+          ledWritingCharactaristic.writeValue((byte)ledWrite);
           Serial.println("* Writing value to led_type characteristic done!");
           Serial.println(" ");
         }
       } else {
-        Serial.println("Invalid number! Enter a number between 1 and 8.");
+        Serial.println("Invaliddddd number! Enter a number between 1 and 8.");
       }
     }
   }

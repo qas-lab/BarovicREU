@@ -13,11 +13,12 @@ const char* deviceServiceUuid = "19b10000-e8f2-537e-4f6c-d104768a1214";
 const char* deviceServiceCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1214";
 
 // Variable to store the LED value
-int ledValue = 8;
+int ledRead = 8;
+int ledWrite = 8;
 
 // Create BLE service and characteristics
 BLEService ledService(deviceServiceUuid);
-BLEByteCharacteristic ledCharacteristic(deviceServiceCharacteristicUuid, BLERead | BLEWrite);
+BLEByteCharacteristic ledReadingCharactaristic(deviceServiceCharacteristicUuid, BLERead | BLEWrite);
 
 void setup() {
   Serial.begin(9600); // Start serial communication
@@ -41,9 +42,9 @@ void setup() {
 
   BLE.setLocalName("Arduino Nano 33 BLE (Peripheral)"); // Set the local name for the BLE device
   BLE.setAdvertisedService(ledService); // Advertise the service
-  ledService.addCharacteristic(ledCharacteristic); // Add the characteristic to the service
+  ledService.addCharacteristic(ledReadingCharactaristic); // Add the characteristic to the service
   BLE.addService(ledService); // Add the service
-  ledCharacteristic.writeValue(ledValue); // Initialize the characteristic value
+  ledReadingCharactaristic.writeValue(ledRead); // Initialize the characteristic value
   BLE.advertise(); // Start advertising the BLE device
 
   Serial.println("Nano 33 BLE (Peripheral Device)");
@@ -62,22 +63,22 @@ void loop() {
     // While the central device is connected
     while (central.connected()) {
       // Check if the characteristic value has been written by the central device
-      if (ledCharacteristic.written()) {
-        ledValue = ledCharacteristic.value(); // Get the new LED value
+      if (ledReadingCharactaristic.written()) {
+        ledRead = ledReadingCharactaristic.value(); // Get the new LED value
         Serial.print("* Received value from central: ");
-        Serial.println(ledValue);
-        switchLED(ledValue); // Update LED based on received value
+        Serial.println(ledRead);
+        switchLED(ledRead); // Update LED based on received value
       }
 
       // Read user input from Serial Monitor to send to central
       if (Serial.available() > 0) {
-        ledValue = Serial.parseInt();
-        if (ledValue >= 1 && ledValue <= 8) {
-          ledCharacteristic.writeValue((byte)ledValue); // Send value to central
+        ledRead = Serial.parseInt();
+        if (ledRead >= 1 && ledRead <= 8) {
+          ledReadingCharactaristic.writeValue((byte)ledRead); // Send value to central
           Serial.print("* Sent value to central: ");
-          Serial.println(ledValue);
+          Serial.println(ledRead);
         } else {
-          Serial.println("Invalid number! Enter a number between 1 and 8.");
+          Serial.println("Invalid numbersssss! Enter a number between 1 and 8.");
         }
       }
     }
