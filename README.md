@@ -3,7 +3,7 @@
 ------------
 ## Getting Started
 ```bash
-git clone TO DO
+git clone https://github.com/qas-lab/BarovicREU.git
 ```
 
 ## Project Structure
