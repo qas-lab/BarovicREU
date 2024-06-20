@@ -5,12 +5,10 @@
 ```bash
 git clone https://github.com/qas-lab/BarovicREU.git
 ```
-## Arduino IDE
-TO DO
-## Arduino CLI
-TO DO
+## Arduino
+IDE + CLI
 ## Edge Impulse
-TO DO
+IDE + CLI
 ## 
 ----------
 ## Project Structure
