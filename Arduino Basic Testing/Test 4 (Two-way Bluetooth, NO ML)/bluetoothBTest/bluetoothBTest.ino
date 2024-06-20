@@ -43,7 +43,7 @@ void setup() {
   BLE.setAdvertisedService(ledService); // Advertise the service
   ledService.addCharacteristic(ledCharacteristic); // Add the characteristic to the service
   BLE.addService(ledService); // Add the service
-  ledCharacteristic.writeValue(-1); // Initialize the characteristic value
+  ledCharacteristic.writeValue(ledValue); // Initialize the characteristic value
   BLE.advertise(); // Start advertising the BLE device
 
   Serial.println("Nano 33 BLE (Peripheral Device)");
@@ -51,74 +51,79 @@ void setup() {
 }
 
 void loop() {
-  BLEDevice central = BLE.central(); // Wait for a central device to connect
-  Serial.println("- Discovering central device...");
-  delay(500);
+  // Listen for BLE peripherals to connect
+  BLEDevice central = BLE.central();
 
-  if (central) { // If a central device is found
+  if (central) { // If a central device is connected
     Serial.println("* Connected to central device!");
     Serial.print("* Device MAC address: ");
     Serial.println(central.address());
-    Serial.println(" ");
 
     // While the central device is connected
     while (central.connected()) {
-      if (ledCharacteristic.written()) { // If the characteristic value is written
+      // Check if the characteristic value has been written by the central device
+      if (ledCharacteristic.written()) {
         ledValue = ledCharacteristic.value(); // Get the new LED value
-        //writeGesture(gesture); // Perform the action based on the gesture
+        Serial.print("* Received value from central: ");
+        Serial.println(ledValue);
+        switchLED(ledValue); // Update LED based on received value
       }
     }
-    
+
     Serial.println("* Disconnected from central device!");
   }
 }
 
-void switchLED(int incomingNumber)
-{
-   switch (incomingNumber) {
-      case 1: // Red
-        analogWrite(ledRedPin, 0);
-        Serial.println("Setting LED color to Red");
-        break;
-      case 2: // Green
-        analogWrite(ledGreenPin, 0);
-        Serial.println("Setting LED color to Green");
-        break;
-      case 3: // Blue
-        analogWrite(ledBluePin, 0);
-        Serial.println("Setting LED color to Blue");
-        break;
-      case 4: // Yellow (Red + Green)
-        analogWrite(ledRedPin, 0);
-        analogWrite(ledGreenPin, 0);
-        Serial.println("Setting LED color to Yellow (Red + Green)");
-        break;
-      case 5: // Cyan (Green + Blue)
-        analogWrite(ledGreenPin, 0);
-        analogWrite(ledBluePin, 0);
-        Serial.println("Setting LED color to Cyan (Green + Blue)");
-        break;
-      case 6: // Magenta (Red + Blue)
-        analogWrite(ledRedPin, 0);
-        analogWrite(ledBluePin, 0);
-        Serial.println("Setting LED color to Magenta (Red + Blue)");
-        break;
-      case 7: // White (Red + Green + Blue)
-        analogWrite(ledRedPin, 0);
-        analogWrite(ledGreenPin, 0);
-        analogWrite(ledBluePin, 0);
-        Serial.println("Setting LED color to White (Red + Green + Blue)");
-        break;
-      case 8:
-        analogWrite(ledRedPin, 255);
-        analogWrite(ledGreenPin, 255);
-        analogWrite(ledBluePin, 255);
-        Serial.println("Turning off the LED");
-        break;
-      default:
-        // Invalid number, turn off the LED
-        Serial.println("Invalid number! Enter a number between 1 and 8.");
-        break;
-    }
+void switchLED(int incomingNumber) {
+  // Turn off all colors first
+  analogWrite(ledRedPin, 255);
+  analogWrite(ledGreenPin, 255);
+  analogWrite(ledBluePin, 255);
+
+  switch (incomingNumber) {
+    case 1: // Red
+      analogWrite(ledRedPin, 0);
+      Serial.println("Setting LED color to Red");
+      break;
+    case 2: // Green
+      analogWrite(ledGreenPin, 0);
+      Serial.println("Setting LED color to Green");
+      break;
+    case 3: // Blue
+      analogWrite(ledBluePin, 0);
+      Serial.println("Setting LED color to Blue");
+      break;
+    case 4: // Yellow (Red + Green)
+      analogWrite(ledRedPin, 0);
+      analogWrite(ledGreenPin, 0);
+      Serial.println("Setting LED color to Yellow (Red + Green)");
+      break;
+    case 5: // Cyan (Green + Blue)
+      analogWrite(ledGreenPin, 0);
+      analogWrite(ledBluePin, 0);
+      Serial.println("Setting LED color to Cyan (Green + Blue)");
+      break;
+    case 6: // Magenta (Red + Blue)
+      analogWrite(ledRedPin, 0);
+      analogWrite(ledBluePin, 0);
+      Serial.println("Setting LED color to Magenta (Red + Blue)");
+      break;
+    case 7: // White (Red + Green + Blue)
+      analogWrite(ledRedPin, 0);
+      analogWrite(ledGreenPin, 0);
+      analogWrite(ledBluePin, 0);
+      Serial.println("Setting LED color to White (Red + Green + Blue)");
+      break;
+    case 8:
+      analogWrite(ledRedPin, 255);
+      analogWrite(ledGreenPin, 255);
+      analogWrite(ledBluePin, 255);
+      Serial.println("Turning off the LED");
+      break;
+    default:
+      // Invalid number, turn off the LED
+      Serial.println("Invalid number! Enter a number between 1 and 8.");
+      break;
+  }
 }
 
