@@ -56,16 +56,35 @@ void setup() {
 }
 
 void loop() {
-  BLEDevice central = BLE.central(); // Wait for a central device to connect
+  connectToCentral();
+  if(ledWrite == 1)
+  {
+    ledWrite = 2;
+  }
+  else
+  {
+    ledWrite = 1;
+  }
+  connectToPeripheral();
+}
 
+void connectToCentral()
+{
+  BLEDevice central = BLE.central(); // Wait for a central device to connect
+  
+  Serial.println("- Discovering peripheral device...");
+  
   if (central) { // If a central device is found
     Serial.println("* Connected to central device!");
     Serial.print("* Device MAC address: ");
     Serial.println(central.address());
     Serial.println(" ");
 
+    // Get the characteristic we want to read from
+    BLECharacteristic ledWritingCharactaristic = central.characteristic(searchDeviceServiceCharacteristicUuid);
+  
     // While the central device is connected
-    while (central.connected()) {
+    //while (central.connected()) {
       // Check if the characteristic value has been written by the central device
       if (ledReadingCharactaristic.written()) {
         ledRead = ledReadingCharactaristic.value(); // Get the new LED value
@@ -85,13 +104,117 @@ void loop() {
           Serial.println("Invalid numbersssss! Enter a number between 1 and 8.");
         }
       }
-    }
-
+    //}
+    central.disconnect();
     Serial.println("* Disconnected from central device!");
   }
 }
+
+void connectToPeripheral() {
+  BLEDevice peripheral;
+  
+  Serial.println("- Discovering peripheral device...");
+  int count = 0;
+  // Scan for peripherals with the specified service UUID
+  do {
+    BLE.scanForUuid(searchDeviceServiceUuid);
+    peripheral = BLE.available();
+    count++;
+    if(count > 100)
+    {
+      connectToCentral();
+    }
+  } while (!peripheral);    // Keep scanning until a peripheral is found
+  
+  if (peripheral) {
+    Serial.println("* Peripheral device found!");
+    Serial.print("* Device MAC address: ");
+    Serial.println(peripheral.address());
+    Serial.print("* Device name: ");
+    Serial.println(peripheral.localName());
+    Serial.print("* Advertised service UUID: ");
+    Serial.println(peripheral.advertisedServiceUuid());
+    Serial.println(" ");
+    BLE.stopScan();         // Stop scanning once the peripheral is found
+    controlPeripheral(peripheral); // Control the found peripheral
+    peripheral.disconnect();
+  }
+}
+
+void controlPeripheral(BLEDevice peripheral) {
+  Serial.println("- Connecting to peripheral device...");
+
+  // Attempt to connect to the peripheral
+  if (peripheral.connect()) {
+    Serial.println("* Connected to peripheral device!");
+    Serial.println(" ");
+  } else {
+    Serial.println("* Connection to peripheral device failed!");
+    Serial.println(" ");
+    return; // Exit the function if connection fails
+  }
+
+  Serial.println("- Discovering peripheral device attributes...");
+  // Attempt to discover the peripheral's attributes
+  if (peripheral.discoverAttributes()) {
+    Serial.println("* Peripheral device attributes discovered!");
+    Serial.println(" ");
+  } else {
+    Serial.println("* Peripheral device attributes discovery failed!");
+    Serial.println(" ");
+    peripheral.disconnect(); // Disconnect if attribute discovery fails
+    return;
+  }
+
+  // Get the characteristic we want to read from
+  BLECharacteristic ledWritingCharactaristic = peripheral.characteristic(searchDeviceServiceCharacteristicUuid);
+  
+  // Check if the characteristic is found and writable
+  if (!ledWritingCharactaristic) {
+    Serial.println("* Peripheral device does not have led_type characteristic!");
+    peripheral.disconnect();
+    return;
+  } else if (!ledWritingCharactaristic.canWrite()) {
+    Serial.println("* Peripheral does not have a writable led_type characteristic!");
+    peripheral.disconnect();
+    return;
+  }
+  ledWritingCharactaristic.writeValue((byte)ledWrite);
+  // Continuously check for gestures while connected to the peripheral
+  //while (peripheral.connected()) {
+    // Check if the characteristic value has been written by the central device
+      if (ledReadingCharactaristic.written()) {
+        ledRead = ledReadingCharactaristic.value(); // Get the new LED value
+        Serial.print("* Received value from central: ");
+        Serial.println(ledRead);
+        switchLED(ledRead); // Update LED based on received value
+      }
+    // Read user input from Serial Monitor to send to peripheral
+    if (Serial.available() > 0) {
+      ledWrite = Serial.parseInt();
+      if (ledWrite >= 1 && ledWrite <= 8) {
+        // Write the new gesture value if it has changed
+        if (oldLedValue != ledWrite) {  
+          oldLedValue = ledWrite;
+          Serial.print("* Writing value to led_type characteristic: ");
+          Serial.println(ledWrite);
+          ledWritingCharactaristic.writeValue((byte)ledWrite);
+          Serial.println("* Writing value to led_type characteristic done!");
+          Serial.println(" ");
+        }
+      } else {
+        Serial.println("Invaliddddd number! Enter a number between 1 and 8.");
+      }
+    }
+  //}
+  Serial.println("- Peripheral device disconnected!");
+}
+
 void switchLED(int incomingNumber)
 {
+    analogWrite(ledRedPin, 255);
+    analogWrite(ledGreenPin, 255);
+    analogWrite(ledBluePin, 255);
    switch (incomingNumber) {
       case 1: // Red
         analogWrite(ledRedPin, 0);
