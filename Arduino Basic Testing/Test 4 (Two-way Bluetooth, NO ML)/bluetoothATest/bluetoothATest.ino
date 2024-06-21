@@ -9,21 +9,25 @@ const int ledGreenPin = 24;
 const int ledBluePin = 23;
 
 // UUIDs for the service and characteristic we want to interact with
-const char* deviceServiceUuid = "19b10000-e8f2-537e-4f6c-d104768a1214";
-const char* deviceServiceCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1214";
+const char* localDeviceServiceUuid = "12345678-1234-1234-1234-1234567890AB";//"19b10000-e8f2-537e-4f6c-d104768a1214";
+const char* localDeviceServiceCharacteristicUuid = "12345678-1234-1234-1234-1234567890AC";//"19b10001-e8f2-537e-4f6c-d104768a1214";
 
-// Variables to store the current and previous gesture values
+//UUIDs
+const char* searchDeviceServiceUuid = "12345678-1234-1234-1234-1234567890AD";
+const char* searchDeviceServiceCharacteristicUuid = "12345678-1234-1234-1234-1234567890AE";
+
+// Variables to store the current and previous LED values
 int ledRead = 8;
 int ledWrite = 8;
 int oldLedValue = 8;
 
-BLEService ledService(deviceServiceUuid);
-BLEByteCharacteristic ledReadingCharactaristic(deviceServiceCharacteristicUuid, BLERead | BLEWrite);
+BLEService ledService(localDeviceServiceUuid);
+BLEByteCharacteristic ledReadingCharactaristic(localDeviceServiceCharacteristicUuid, BLERead | BLEWrite);
 
 void setup() {
   Serial.begin(9600);       // Start the serial communication
   while (!Serial);          // Wait for the serial port to connect
-
+  
   // Set the RGB LED pins as outputs:
   pinMode(ledRedPin, OUTPUT);
   pinMode(ledGreenPin, OUTPUT);
@@ -40,10 +44,14 @@ void setup() {
     while (1);              // Halt the program if BLE initialization fails
   }
   
-  BLE.setLocalName("Nano 33 BLE (Central)"); // Set the local name for the BLE device
-  BLE.advertise();          // Start advertising the BLE device
+  BLE.setLocalName("Arduino Nano 33 BLE A"); // Set the local name for the BLE device
+  BLE.setAdvertisedService(ledService); // Advertise the service
+  ledService.addCharacteristic(ledReadingCharactaristic); // Add the characteristic to the service
+  BLE.addService(ledService); // Add the service
+  ledReadingCharactaristic.writeValue(ledRead); // Initialize the characteristic value
+  BLE.advertise(); // Start advertising the BLE device
 
-  Serial.println("Arduino Nano 33 BLE Sense (Central Device)");
+  Serial.println("Nano 33 BLE A");
   Serial.println(" ");
 }
 
@@ -58,11 +66,26 @@ void connectToPeripheral() {
 
   // Scan for peripherals with the specified service UUID
   do {
-    BLE.scanForUuid(deviceServiceUuid);
+    BLE.scanForUuid(searchDeviceServiceUuid);
     peripheral = BLE.available();
   } while (!peripheral);    // Keep scanning until a peripheral is found
   
   if (peripheral) {
+    BLEDevice central = BLE.central(); // Wait for a central device to connect
+
+    if (central) { // If a central device is found
+    Serial.println("* Connected to central device!");
+    Serial.print("* Device MAC address: ");
+    Serial.println(central.address());
+    Serial.println(" ");
+
+    if (ledReadingCharactaristic.written()) {
+        ledRead = ledReadingCharactaristic.value(); // Get the new LED value
+        Serial.print("* Received value from central: ");
+        Serial.println(ledRead);
+        switchLED(ledRead); // Update LED based on received value
+      }
+    }
     Serial.println("* Peripheral device found!");
     Serial.print("* Device MAC address: ");
     Serial.println(peripheral.address());
@@ -102,7 +125,7 @@ void controlPeripheral(BLEDevice peripheral) {
   }
 
   // Get the characteristic we want to read from
-  BLECharacteristic ledWritingCharactaristic = peripheral.characteristic(deviceServiceCharacteristicUuid);
+  BLECharacteristic ledWritingCharactaristic = peripheral.characteristic(searchDeviceServiceCharacteristicUuid);
   
   // Check if the characteristic is found and writable
   if (!ledWritingCharactaristic) {
@@ -118,7 +141,7 @@ void controlPeripheral(BLEDevice peripheral) {
   // Continuously check for gestures while connected to the peripheral
   while (peripheral.connected()) {
     // Check if the characteristic value has been written by the central device
-      if (ledReadingCharactaristic.valueUpdated()) {
+      if (ledReadingCharactaristic.written()) {
         ledRead = ledReadingCharactaristic.value(); // Get the new LED value
         Serial.print("* Received value from central: ");
         Serial.println(ledRead);
