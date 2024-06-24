@@ -1,0 +1,19 @@
+Commands to train for:
+Turn ON
+Turn OFF
+ON
+OFF
+but
+and
+not
+or
+LED
+sleep
+[listen keyword to turn active listen feature on]
+never mind
+flash
+blink
+toggle
+quick
+fast
+slow
