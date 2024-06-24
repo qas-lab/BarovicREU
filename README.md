@@ -25,5 +25,17 @@ git clone https://github.com/qas-lab/BarovicREU.git
 ----------
 ## Project Structure
 ```.
-
+Arduino Basic Testing
+    ├───Edge Impulse Modified Files (ignore version, COM 5)
+    ├───Test 1 (Bad Microphone Data, 2 colors)
+    │   └───modifed-colorkeyword-microphone
+    ├───Test 2 (Chip Microphone Data, 1 color)
+    │   └───modified_color_keyword_2
+    ├───Test 3 (Full LED Test, NO ML)
+    │   └───LEDtest
+    ├───Test 4 (Two-way Bluetooth, NO ML)
+    │   ├───bluetoothATest
+    │   └───bluetoothBTest
+    └───Test 5 (Initial Prototype, 3 colors)
+        └───modified_color_keyword_3
 ```
