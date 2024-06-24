@@ -1,0 +1,10 @@
+.zip file is the arduino library
+
+Add this library through the Arduino IDE via:
+Sketch > Include Library > Add .ZIP Library...
+
+Examples can then be found under:
+File > Examples > colorKeyword_inferencing
+
+Code used can be accessed via:
+File > Examples > colorKeyword_inferencing > nano_ble33_sense > nano_ble33_sense_microphone_continuous
