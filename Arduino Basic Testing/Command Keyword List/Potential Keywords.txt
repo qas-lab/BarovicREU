@@ -9,7 +9,7 @@ not
 or
 LED
 sleep
-[listen keyword to turn active listen feature on]
+Wake up
 never mind
 flash
 blink
@@ -18,3 +18,7 @@ quick
 fast
 slow
 plus
+
+Time:
+minuets, seconds
+5, 10, 15, 20, 25, 30, 1
