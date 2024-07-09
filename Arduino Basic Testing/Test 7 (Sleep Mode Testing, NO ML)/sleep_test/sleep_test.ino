@@ -1,10 +1,44 @@
+#if !( ARDUINO_ARCH_NRF52840 && TARGET_NAME == ARDUINO_NANO33BLE )
+	#error This code is designed to run on nRF52-based Nano-33-BLE boards using mbed-RTOS platform! Please check your Tools->Board setting.
+#endif
+
+// These define's must be placed at the beginning before #include "TimerInterrupt_Generic.h"
+// _TIMERINTERRUPT_LOGLEVEL_ from 0 to 4
+// Don't define _TIMERINTERRUPT_LOGLEVEL_ > 0. Only for special ISR debugging only. Can hang the system.
+// For Nano33-BLE, don't use Serial.print() in ISR as system will definitely hang.
+#define TIMER_INTERRUPT_DEBUG         0
+#define _TIMERINTERRUPT_LOGLEVEL_     0
+
+#include "TimerInterrupt_Generic.h"
+
+#include "ISR_Timer_Generic.h"
+
 #include <Arduino.h>
 #include "mbed.h"
 
-#include "nrf.h"
-#include "nrf_timer.h"
-//#include "nrf_drv_common.h"
+// Init NRF52 timer NRF_TIMER3
+NRF52_MBED_Timer ITimer(NRF_TIMER_3);
 
+// Init ISR_Timer
+// Each ISR_Timer can service 16 different ISR-based timers
+ISR_Timer NRF52_ISR_Timer;
+
+#define TIMER_INTERVAL_1S             1000L
+#define TIMER_INTERVAL_2S             2000L
+#define TIMER_INTERVAL_5S             5000L
+
+void TimerHandler()
+{
+	NRF52_ISR_Timer.run();
+}
+
+// In NRF52, avoid doing something fancy in ISR, for example complex Serial.print with String() argument
+// The pure simple Serial.prints here are just for demonstration and testing. Must be eliminate in working environment
+// Or you can get this run-time error / crash
+void doingSomething1()
+{
+	switchLED();
+}
 
 int global = 0;
 void setup() 
@@ -12,52 +46,6 @@ void setup()
   // put your setup code here, to run once:
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
-  initializeTimer0();
-}
-
-void initializeTimer0()
-{
-  // Disable the timer before configuration
-  NRF_TIMER0->TASKS_STOP = 1;
-  NRF_TIMER0->TASKS_CLEAR = 1;
-
-  // Set the timer mode to Timer
-  NRF_TIMER0->MODE = TIMER_MODE_MODE_Timer;
-
-  // Set the prescaler to get a 1 MHz timer frequency
-  NRF_TIMER0->PRESCALER = 4;
-
-  // Set the timer to compare event at 1000000 ticks (1 second)
-  NRF_TIMER0->CC[0] = 1000000;
-
-  // Enable interrupt for Compare0
-  NRF_TIMER0->INTENSET = TIMER_INTENSET_COMPARE0_Enabled << TIMER_INTENSET_COMPARE0_Pos;
-
-  // Clear the event
-  NRF_TIMER0->EVENTS_COMPARE[0] = 0;
-
-  // Enable the timer interrupt in the NVIC
-  NVIC_EnableIRQ(TIMER0_IRQn);
-
-  // Start the timer
-  NRF_TIMER0->TASKS_START = 1;
-}
-
-// Interrupt Service Routine for TIMER0
-void TIMER0_IRQHandler(void) 
-{
-  if (NRF_TIMER0->EVENTS_COMPARE[0]) 
-  {
-    // Clear the event
-    NRF_TIMER0->EVENTS_COMPARE[0] = 0;
-
-    // Your code to handle the timer interrupt
-    // For example, toggle an LED
-    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-
-    // Reset the timer
-    NRF_TIMER0->TASKS_CLEAR = 1;
-  }
 }
 
 void switchLED()
@@ -80,5 +68,5 @@ void loop()
   //sleep();
   //digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
   switchLED();
-  //delay(1000);
+  delay(1000);
 }
