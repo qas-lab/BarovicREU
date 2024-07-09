@@ -16,6 +16,8 @@
 #include <Arduino.h>
 #include "mbed.h"
 
+#include <PDM.h>
+
 #define HW_TIMER_INTERVAL_MS      1
 
 // Init NRF52 timer NRF_TIMER3
@@ -28,6 +30,9 @@ ISR_Timer NRF52_ISR_Timer;
 #define TIMER_INTERVAL_1S             1000L
 #define TIMER_INTERVAL_2S             2000L
 #define TIMER_INTERVAL_5S             5000L
+
+int global = 0;
+const int soundThreshold = 1;  // Set your sound threshold value
 
 void TimerHandler()
 {
@@ -42,12 +47,39 @@ void doingSomething1()
 	switchLED();
 }
 
-int global = 0;
+void onPDMdata() {
+  int bytesAvailable = PDM.available();
+  if (bytesAvailable > 0) {
+    static int16_t buffer[256];
+    PDM.read(buffer, bytesAvailable);
+    
+    for (int i = 0; i < bytesAvailable / 2; i++) {
+      Serial.println(buffer[i]);
+      if (abs(buffer[i]) > soundThreshold) {
+        Serial.println("Sound detected!");
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(100);
+        digitalWrite(LED_BUILTIN, LOW);
+        return;
+      }
+    }
+  }
+}
+
 void setup() 
 {
   // put your setup code here, to run once:
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
+
+  // Configure the PDM microphone
+  if (!PDM.begin(1, 16000)) {
+    Serial.println("Failed to start PDM!");
+    while (1);
+  }
+  
+  // Set the PDM callback function
+  PDM.onReceive(onPDMdata);
 
   // Interval in microsecs
 	if (ITimer.attachInterruptInterval(HW_TIMER_INTERVAL_MS * 1000, TimerHandler))
