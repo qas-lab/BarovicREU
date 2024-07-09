@@ -44,7 +44,7 @@ void initializeTimer0()
 }
 
 // Interrupt Service Routine for TIMER0
-extern "C" void TIMER0_IRQHandler(void) 
+void TIMER0_IRQHandler(void) 
 {
   if (NRF_TIMER0->EVENTS_COMPARE[0]) 
   {
@@ -69,7 +69,7 @@ void switchLED()
   }
   else 
   {
-    digitalWrite(LED_BUILTIN, HIGH);
+    digitalWrite(LED_BUILTIN, LOW);
     global--;  
   }
 }
@@ -77,5 +77,8 @@ void switchLED()
 void loop() 
 {
   // put your main code here, to run repeatedly:
-  sleep();
+  //sleep();
+  //digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  switchLED();
+  //delay(1000);
 }
