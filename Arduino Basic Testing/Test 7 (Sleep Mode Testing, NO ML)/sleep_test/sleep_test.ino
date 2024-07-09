@@ -16,6 +16,8 @@
 #include <Arduino.h>
 #include "mbed.h"
 
+#define HW_TIMER_INTERVAL_MS      1
+
 // Init NRF52 timer NRF_TIMER3
 NRF52_MBED_Timer ITimer(NRF_TIMER_3);
 
@@ -46,6 +48,19 @@ void setup()
   // put your setup code here, to run once:
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
+
+  // Interval in microsecs
+	if (ITimer.attachInterruptInterval(HW_TIMER_INTERVAL_MS * 1000, TimerHandler))
+	{
+		Serial.print(F("Starting ITimer OK, millis() = "));
+		Serial.println(millis());
+	}
+	else
+		Serial.println(F("Can't set ITimer. Select another freq. or timer"));
+
+	// Just to demonstrate, don't use too many ISR Timers if not absolutely necessary
+	// You can use up to 16 timer for each NRF52_ISR_Timer
+	NRF52_ISR_Timer.setInterval(TIMER_INTERVAL_5S,  doingSomething1);
 }
 
 void switchLED()
@@ -64,9 +79,5 @@ void switchLED()
 
 void loop() 
 {
-  // put your main code here, to run repeatedly:
-  //sleep();
-  //digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-  switchLED();
-  delay(1000);
+  sleep();
 }
