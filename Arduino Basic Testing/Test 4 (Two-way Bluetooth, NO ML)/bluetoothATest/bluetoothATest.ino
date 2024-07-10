@@ -95,11 +95,16 @@ void connectToCentral()
 
       // Read user input from Serial Monitor to send to central
       if (Serial.available() > 0) {
+        int locCount = 0;
         ledRead = Serial.parseInt();
         if (ledRead >= 1 && ledRead <= 8) {
-          ledReadingCharactaristic.writeValue((byte)ledRead); // Send value to central
-          Serial.print("* Sent value to central: ");
-          Serial.println(ledRead);
+          while(locCount != 10)
+          {
+            ledReadingCharactaristic.writeValue((byte)ledRead); // Send value to central
+            Serial.print("* Sent value to central: ");
+            Serial.println(ledRead);
+          }
+          return;
         } else {
           Serial.println("Invalid numbersssss! Enter a number between 1 and 8.");
         }
