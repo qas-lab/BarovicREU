@@ -1,0 +1,20 @@
+ON
+but
+and
+not
+or
+LED
+sleep
+Wake up
+never mind
+flash
+blink
+toggle
+quick
+fast
+slow
+plus
+
+Time:
+minuets, seconds
+5, 10, 15, 20, 25, 30, 1

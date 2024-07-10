@@ -1,0 +1,8 @@
+Blue 
+Cyan
+Green
+Magenta
+Off
+Red
+White
+Yellow
