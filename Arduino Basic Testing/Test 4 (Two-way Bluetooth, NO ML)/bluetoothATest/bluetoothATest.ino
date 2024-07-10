@@ -83,13 +83,14 @@ void connectToCentral()
     BLECharacteristic ledWritingCharactaristic = central.characteristic(searchDeviceServiceCharacteristicUuid);
   
     // While the central device is connected
-    //while (central.connected()) {
+    while (central.connected()) {
       // Check if the characteristic value has been written by the central device
       if (ledReadingCharactaristic.written()) {
         ledRead = ledReadingCharactaristic.value(); // Get the new LED value
         Serial.print("* Received value from central: ");
         Serial.println(ledRead);
         switchLED(ledRead); // Update LED based on received value
+        return;
       }
 
       // Read user input from Serial Monitor to send to central
@@ -103,7 +104,7 @@ void connectToCentral()
           Serial.println("Invalid numbersssss! Enter a number between 1 and 8.");
         }
       }
-    //}
+    }
     central.disconnect();
     Serial.println("* Disconnected from central device!");
   }
@@ -174,13 +175,14 @@ void controlPeripheral(BLEDevice peripheral) {
   }
   ledWritingCharactaristic.writeValue((byte)ledWrite);
   // Continuously check for gestures while connected to the peripheral
-  //while (peripheral.connected()) {
+  while (peripheral.connected()) {
     // Check if the characteristic value has been written by the central device
       if (ledReadingCharactaristic.written()) {
         ledRead = ledReadingCharactaristic.value(); // Get the new LED value
         Serial.print("* Received value from central: ");
         Serial.println(ledRead);
         switchLED(ledRead); // Update LED based on received value
+        return;
       }
     // Read user input from Serial Monitor to send to peripheral
     if (Serial.available() > 0) {
@@ -199,7 +201,7 @@ void controlPeripheral(BLEDevice peripheral) {
         Serial.println("Invaliddddd number! Enter a number between 1 and 8.");
       }
     }
-  //}
+  }
   Serial.println("- Peripheral device disconnected!");
 }
 
