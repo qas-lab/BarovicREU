@@ -127,7 +127,7 @@ void connectToCentral()
         switchLED(ledRead); // Update LED based on received value
         return;
       }
-
+      /*
       // Read user input from Serial Monitor to send to central
       if (Serial.available() > 0) {
         int locCount = 0;
@@ -145,6 +145,7 @@ void connectToCentral()
           Serial.println("Invalid numbersssss! Enter a number between 1 and 8.");
         }
       }
+      */
     }
     central.disconnect();
     Serial.println("* Disconnected from central device!");
