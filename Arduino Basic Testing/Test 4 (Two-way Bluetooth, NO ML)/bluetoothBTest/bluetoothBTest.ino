@@ -57,14 +57,7 @@ void setup() {
 
 void loop() {
   connectToCentral();
-  if(ledWrite == 1)
-  {
-    ledWrite = 2;
-  }
-  else
-  {
-    ledWrite = 1;
-  }
+
   connectToPeripheral();
 }
 
@@ -84,7 +77,7 @@ void connectToCentral()
     BLECharacteristic ledWritingCharactaristic = central.characteristic(searchDeviceServiceCharacteristicUuid);
   
     // While the central device is connected
-    //while (central.connected()) {
+    while (central.connected()) {
       // Check if the characteristic value has been written by the central device
       if (ledReadingCharactaristic.written()) {
         ledRead = ledReadingCharactaristic.value(); // Get the new LED value
@@ -104,7 +97,7 @@ void connectToCentral()
           Serial.println("Invalid numbersssss! Enter a number between 1 and 8.");
         }
       }
-    //}
+    }
     central.disconnect();
     Serial.println("* Disconnected from central device!");
   }
