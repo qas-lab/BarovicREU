@@ -92,11 +92,12 @@ void connectToCentral()
         int locCount = 0;
         ledRead = Serial.parseInt();
         if (ledRead >= 1 && ledRead <= 8) {
-          while(locCount != 10)
+          while(locCount < 10)
           {
             ledReadingCharactaristic.writeValue((byte)ledRead); // Send value to central
             Serial.print("* Sent value to central: ");
             Serial.println(ledRead);
+            locCount++;
           }
           return;
         } else {
@@ -191,13 +192,14 @@ void controlPeripheral(BLEDevice peripheral) {
         // Write the new gesture value if it has changed
         if (oldLedValue != ledWrite) {  
           oldLedValue = ledWrite;
-          while(locCount != 10)
+          while(locCount < 10)
           {
             Serial.print("* Writing value to led_type characteristic: ");
             Serial.println(ledWrite);
             ledWritingCharactaristic.writeValue((byte)ledWrite);
             Serial.println("* Writing value to led_type characteristic done!");
             Serial.println(" ");
+            locCount++;
           }
           return;
         }
