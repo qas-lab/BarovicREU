@@ -1,0 +1,1 @@
+https://docs.edgeimpulse.com/docs/run-inference/cpp-library/running-your-impulse-locally
