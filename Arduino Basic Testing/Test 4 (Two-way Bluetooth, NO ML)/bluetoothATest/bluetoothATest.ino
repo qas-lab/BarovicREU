@@ -56,9 +56,49 @@ void setup() {
 }
 
 void loop() {
-  connectToPeripheral();    // Continuously try to connect to the peripheral device
+  connectToPeripheral();    // Connect to peripheral device (This device as central)
+  resetBLEtoPeripheral();
+  connectToCentral();       //Connect to central device (This device as peripheral)
+  resetBLEtoCentral();
+  Serial.println("*********Cycle Finished************");
+}
 
-  connectToCentral();
+void resetBLEtoCentral() {
+  // Stop BLE if running
+  BLE.end();
+  Serial.println("BLE stopped.");
+
+  // Delay for a short time to ensure BLE stops completely
+  delay(100);
+
+  // Start BLE again
+  if (!BLE.begin()) {
+    Serial.println("restarting BLE failed!");
+    while (1);
+  }
+  BLE.setLocalName("Arduino Nano 33 BLE A"); // Set the local name for the BLE device
+  BLE.advertise(); // Start advertising the BLE device
+}
+
+void resetBLEtoPeripheral() {
+  // Stop BLE if running
+  BLE.end();
+  Serial.println("BLE stopped.");
+
+  // Delay for a short time to ensure BLE stops completely
+  delay(100);
+
+  // Start BLE again
+  if (!BLE.begin()) {
+    Serial.println("restarting BLE failed!");
+    while (1);
+  }
+  BLE.setLocalName("Arduino Nano 33 BLE A"); // Set the local name for the BLE device
+  BLE.setAdvertisedService(ledService); // Advertise the service
+  ledService.addCharacteristic(ledReadingCharactaristic); // Add the characteristic to the service
+  BLE.addService(ledService); // Add the service
+  ledReadingCharactaristic.writeValue(ledRead); // Initialize the characteristic value
+  BLE.advertise(); // Start advertising the BLE device
 }
 
 void connectToCentral()
@@ -157,7 +197,7 @@ void controlPeripheral(BLEDevice peripheral) {
   } else {
     Serial.println("* Peripheral device attributes discovery failed!");
     Serial.println(" ");
-    //peripheral.disconnect(); // Disconnect if attribute discovery fails
+    peripheral.disconnect(); // Disconnect if attribute discovery fails
     return;
   }
 
@@ -178,6 +218,7 @@ void controlPeripheral(BLEDevice peripheral) {
   // Continuously check for gestures while connected to the peripheral
   while (peripheral.connected()) {
     // Check if the characteristic value has been written by the central device
+      /*
       if (ledReadingCharactaristic.written()) {
         ledRead = ledReadingCharactaristic.value(); // Get the new LED value
         Serial.print("* Received value from central: ");
@@ -185,6 +226,7 @@ void controlPeripheral(BLEDevice peripheral) {
         switchLED(ledRead); // Update LED based on received value
         return;
       }
+      */
     // Read user input from Serial Monitor to send to peripheral
     if (Serial.available() > 0) {
       int locCount = 0;
