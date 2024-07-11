@@ -63,6 +63,7 @@ void loop() {
 
 void connectToCentral()
 {
+  delay(10);
   BLEDevice central = BLE.central(); // Wait for a central device to connect
   
   Serial.println("- Discovering central device...");
