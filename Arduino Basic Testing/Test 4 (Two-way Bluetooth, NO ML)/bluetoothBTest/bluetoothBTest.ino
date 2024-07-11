@@ -84,15 +84,21 @@ void connectToCentral()
         Serial.print("* Received value from central: ");
         Serial.println(ledRead);
         switchLED(ledRead); // Update LED based on received value
+        return;
       }
 
       // Read user input from Serial Monitor to send to central
       if (Serial.available() > 0) {
+        int locCount = 0;
         ledRead = Serial.parseInt();
         if (ledRead >= 1 && ledRead <= 8) {
-          ledReadingCharactaristic.writeValue((byte)ledRead); // Send value to central
-          Serial.print("* Sent value to central: ");
-          Serial.println(ledRead);
+          while(locCount != 10)
+          {
+            ledReadingCharactaristic.writeValue((byte)ledRead); // Send value to central
+            Serial.print("* Sent value to central: ");
+            Serial.println(ledRead);
+          }
+          return;
         } else {
           Serial.println("Invalid numbersssss! Enter a number between 1 and 8.");
         }
@@ -107,16 +113,11 @@ void connectToPeripheral() {
   BLEDevice peripheral;
   
   Serial.println("- Discovering peripheral device...");
-  int count = 0;
+
   // Scan for peripherals with the specified service UUID
   do {
     BLE.scanForUuid(searchDeviceServiceUuid);
     peripheral = BLE.available();
-    count++;
-    if(count > 100)
-    {
-      connectToCentral();
-    }
   } while (!peripheral);    // Keep scanning until a peripheral is found
   
   if (peripheral) {
