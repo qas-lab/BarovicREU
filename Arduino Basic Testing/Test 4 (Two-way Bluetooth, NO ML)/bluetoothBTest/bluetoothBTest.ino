@@ -56,17 +56,18 @@ void setup() {
 }
 
 void loop() {
-  connectToCentral();
-  resetBLE();
-  connectToPeripheral();
-  resetBLE();
+  connectToCentral(); // Connect to central device (This device as peripheral)
+  resetBLEtoCentral();
+  connectToPeripheral(); //Connect to peripheral device (This device as central)
+  resetBLEtoPeripheral();
   Serial.println("*********Cycle Finished************");
 }
 
-void resetBLE() {
+void resetBLEtoCentral() {
   // Stop BLE if running
-    BLE.end();
-    Serial.println("BLE stopped.");
+  BLE.end();
+  Serial.println("BLE stopped.");
+
   // Delay for a short time to ensure BLE stops completely
   delay(100);
 
@@ -75,11 +76,39 @@ void resetBLE() {
     Serial.println("restarting BLE failed!");
     while (1);
   }
+  BLE.setLocalName("Arduino Nano 33 BLE B"); // Set the local name for the BLE device
+  BLE.setAdvertisedService(ledService); // Advertise the service
+  ledService.addCharacteristic(ledReadingCharactaristic); // Add the characteristic to the service
+  BLE.addService(ledService); // Add the service
+  ledReadingCharactaristic.writeValue(ledRead); // Initialize the characteristic value
+  BLE.advertise(); // Start advertising the BLE device
 }
+
+void resetBLEtoPeripheral() {
+  // Stop BLE if running
+  BLE.end();
+  Serial.println("BLE stopped.");
+
+  // Delay for a short time to ensure BLE stops completely
+  delay(100);
+
+  // Start BLE again
+  if (!BLE.begin()) {
+    Serial.println("restarting BLE failed!");
+    while (1);
+  }
+  BLE.setLocalName("Arduino Nano 33 BLE B"); // Set the local name for the BLE device
+  BLE.setAdvertisedService(ledService); // Advertise the service
+  ledService.addCharacteristic(ledReadingCharactaristic); // Add the characteristic to the service
+  BLE.addService(ledService); // Add the service
+  ledReadingCharactaristic.writeValue(ledRead); // Initialize the characteristic value
+  BLE.advertise(); // Start advertising the BLE device
+}
+
 void connectToCentral()
 {
-  delay(10);
   BLEDevice central = BLE.central(); // Wait for a central device to connect
+  delay(500);
   
   Serial.println("- Discovering central device...");
   
@@ -90,7 +119,7 @@ void connectToCentral()
     Serial.println(" ");
 
     // Get the characteristic we want to read from
-    BLECharacteristic ledWritingCharactaristic = central.characteristic(searchDeviceServiceCharacteristicUuid);
+    //BLECharacteristic ledWritingCharactaristic = central.characteristic(searchDeviceServiceCharacteristicUuid);
 
     // While the central device is connected
     while (central.connected()) {
@@ -102,7 +131,6 @@ void connectToCentral()
         switchLED(ledRead); // Update LED based on received value
         return;
       }
-      /*
       // Read user input from Serial Monitor to send to central
       if (Serial.available() > 0) {
         int locCount = 0;
@@ -120,7 +148,6 @@ void connectToCentral()
           Serial.println("Invalid numbersssss! Enter a number between 1 and 8.");
         }
       }
-      */
     }
     central.disconnect();
     Serial.println("* Disconnected from central device!");

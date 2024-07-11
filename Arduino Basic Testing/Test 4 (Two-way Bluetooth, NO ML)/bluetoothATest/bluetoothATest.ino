@@ -77,6 +77,10 @@ void resetBLEtoCentral() {
     while (1);
   }
   BLE.setLocalName("Arduino Nano 33 BLE A"); // Set the local name for the BLE device
+  BLE.setAdvertisedService(ledService); // Advertise the service
+  ledService.addCharacteristic(ledReadingCharactaristic); // Add the characteristic to the service
+  BLE.addService(ledService); // Add the service
+  ledReadingCharactaristic.writeValue(ledRead); // Initialize the characteristic value
   BLE.advertise(); // Start advertising the BLE device
 }
 
@@ -103,8 +107,8 @@ void resetBLEtoPeripheral() {
 
 void connectToCentral()
 {
-  delay(10);
   BLEDevice central = BLE.central(); // Wait for a central device to connect
+  delay(500);
   
   Serial.println("- Discovering central device...");
   
@@ -115,7 +119,7 @@ void connectToCentral()
     Serial.println(" ");
 
     // Get the characteristic we want to read from
-    BLECharacteristic ledWritingCharactaristic = central.characteristic(searchDeviceServiceCharacteristicUuid);
+    //BLECharacteristic ledWritingCharactaristic = central.characteristic(searchDeviceServiceCharacteristicUuid);
   
     // While the central device is connected
     while (central.connected()) {
@@ -127,7 +131,6 @@ void connectToCentral()
         switchLED(ledRead); // Update LED based on received value
         return;
       }
-      /*
       // Read user input from Serial Monitor to send to central
       if (Serial.available() > 0) {
         int locCount = 0;
@@ -145,7 +148,6 @@ void connectToCentral()
           Serial.println("Invalid numbersssss! Enter a number between 1 and 8.");
         }
       }
-      */
     }
     central.disconnect();
     Serial.println("* Disconnected from central device!");
@@ -219,7 +221,6 @@ void controlPeripheral(BLEDevice peripheral) {
   // Continuously check for gestures while connected to the peripheral
   while (peripheral.connected()) {
     // Check if the characteristic value has been written by the central device
-      /*
       if (ledReadingCharactaristic.written()) {
         ledRead = ledReadingCharactaristic.value(); // Get the new LED value
         Serial.print("* Received value from central: ");
@@ -227,7 +228,6 @@ void controlPeripheral(BLEDevice peripheral) {
         switchLED(ledRead); // Update LED based on received value
         return;
       }
-      */
     // Read user input from Serial Monitor to send to peripheral
     if (Serial.available() > 0) {
       int locCount = 0;
