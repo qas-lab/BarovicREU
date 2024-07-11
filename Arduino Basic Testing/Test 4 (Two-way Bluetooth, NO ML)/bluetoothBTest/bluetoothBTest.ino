@@ -63,7 +63,7 @@ void loop() {
 
 void connectToCentral()
 {
-  Serial.println("*******Critical Error Drop-out************");
+  delay(10);
   BLEDevice central = BLE.central(); // Wait for a central device to connect
   
   Serial.println("- Discovering central device...");
