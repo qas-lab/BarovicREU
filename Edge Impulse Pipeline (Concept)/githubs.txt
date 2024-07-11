@@ -1,0 +1,14 @@
+Standalone Inferencing:
+https://github.com/edgeimpulse/example-standalone-inferencing
+
+Edge Impulse:
+https://github.com/edgeimpulse
+
+Chip Repos:
+https://github.com/topics/arduino-nano-33-ble-sense
+
+SpecAugment:
+https://github.com/pyyush/SpecAugment
+
+Arduino Firmware:
+https://github.com/edgeimpulse/firmware-arduino-nano-33-ble-sense/tree/master/src/edge-impulse-sdk
