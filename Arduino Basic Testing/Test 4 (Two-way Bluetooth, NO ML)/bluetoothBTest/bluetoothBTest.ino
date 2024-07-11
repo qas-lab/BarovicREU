@@ -57,10 +57,25 @@ void setup() {
 
 void loop() {
   connectToCentral();
-
+  resetBLE();
   connectToPeripheral();
+  resetBLE();
+  Serial.println("*********Cycle Finished************");
 }
 
+void resetBLE() {
+  // Stop BLE if running
+    BLE.end();
+    Serial.println("BLE stopped.");
+  // Delay for a short time to ensure BLE stops completely
+  delay(100);
+
+  // Start BLE again
+  if (!BLE.begin()) {
+    Serial.println("restarting BLE failed!");
+    while (1);
+  }
+}
 void connectToCentral()
 {
   delay(10);
@@ -76,6 +91,7 @@ void connectToCentral()
 
     // Get the characteristic we want to read from
     BLECharacteristic ledWritingCharactaristic = central.characteristic(searchDeviceServiceCharacteristicUuid);
+
     // While the central device is connected
     while (central.connected()) {
       // Check if the characteristic value has been written by the central device
@@ -86,7 +102,7 @@ void connectToCentral()
         switchLED(ledRead); // Update LED based on received value
         return;
       }
-
+      /*
       // Read user input from Serial Monitor to send to central
       if (Serial.available() > 0) {
         int locCount = 0;
@@ -104,6 +120,7 @@ void connectToCentral()
           Serial.println("Invalid numbersssss! Enter a number between 1 and 8.");
         }
       }
+      */
     }
     central.disconnect();
     Serial.println("* Disconnected from central device!");
