@@ -57,12 +57,13 @@ void setup() {
 
 void loop() {
   connectToCentral();
-  Serial.println("* Critical Error Drop-out");
+
   connectToPeripheral();
 }
 
 void connectToCentral()
 {
+  Serial.println("*******Critical Error Drop-out************");
   BLEDevice central = BLE.central(); // Wait for a central device to connect
   
   Serial.println("- Discovering central device...");
@@ -75,7 +76,6 @@ void connectToCentral()
 
     // Get the characteristic we want to read from
     BLECharacteristic ledWritingCharactaristic = central.characteristic(searchDeviceServiceCharacteristicUuid);
-  
     // While the central device is connected
     while (central.connected()) {
       // Check if the characteristic value has been written by the central device
