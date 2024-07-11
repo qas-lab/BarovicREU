@@ -156,7 +156,7 @@ void controlPeripheral(BLEDevice peripheral) {
   } else {
     Serial.println("* Peripheral device attributes discovery failed!");
     Serial.println(" ");
-    peripheral.disconnect(); // Disconnect if attribute discovery fails
+    //peripheral.disconnect(); // Disconnect if attribute discovery fails
     return;
   }
 
