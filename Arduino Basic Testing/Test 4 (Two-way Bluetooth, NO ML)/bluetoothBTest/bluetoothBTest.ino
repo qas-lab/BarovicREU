@@ -175,32 +175,38 @@ void controlPeripheral(BLEDevice peripheral) {
   }
   ledWritingCharactaristic.writeValue((byte)ledWrite);
   // Continuously check for gestures while connected to the peripheral
-  //while (peripheral.connected()) {
+  while (peripheral.connected()) {
     // Check if the characteristic value has been written by the central device
       if (ledReadingCharactaristic.written()) {
         ledRead = ledReadingCharactaristic.value(); // Get the new LED value
         Serial.print("* Received value from central: ");
         Serial.println(ledRead);
         switchLED(ledRead); // Update LED based on received value
+        return;
       }
     // Read user input from Serial Monitor to send to peripheral
     if (Serial.available() > 0) {
+      int locCount = 0;
       ledWrite = Serial.parseInt();
       if (ledWrite >= 1 && ledWrite <= 8) {
         // Write the new gesture value if it has changed
         if (oldLedValue != ledWrite) {  
           oldLedValue = ledWrite;
-          Serial.print("* Writing value to led_type characteristic: ");
-          Serial.println(ledWrite);
-          ledWritingCharactaristic.writeValue((byte)ledWrite);
-          Serial.println("* Writing value to led_type characteristic done!");
-          Serial.println(" ");
+          while(locCount != 10)
+          {
+            Serial.print("* Writing value to led_type characteristic: ");
+            Serial.println(ledWrite);
+            ledWritingCharactaristic.writeValue((byte)ledWrite);
+            Serial.println("* Writing value to led_type characteristic done!");
+            Serial.println(" ");
+          }
+          return;
         }
       } else {
         Serial.println("Invaliddddd number! Enter a number between 1 and 8.");
       }
     }
-  //}
+  }
   Serial.println("- Peripheral device disconnected!");
 }
 
