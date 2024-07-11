@@ -17,9 +17,9 @@ const char* localDeviceServiceUuid = "12345678-1234-1234-1234-1234567890AD";
 const char* localDeviceServiceCharacteristicUuid = "12345678-1234-1234-1234-1234567890AE";
 
 // Variables to store the current and previous LED values
-int ledRead = 8;
-int ledWrite = 8;
-int oldLedValue = 8;
+int ledRead = 4;
+int ledWrite = 4;
+int oldLedValue = 4;
 
 BLEService ledService(localDeviceServiceUuid);
 BLEByteCharacteristic ledReadingCharactaristic(localDeviceServiceCharacteristicUuid, BLERead | BLEWrite);
@@ -57,7 +57,7 @@ void setup() {
 
 void loop() {
   connectToCentral();
-
+  Serial.println("* Critical Error Drop-out");
   connectToPeripheral();
 }
 
@@ -65,7 +65,7 @@ void connectToCentral()
 {
   BLEDevice central = BLE.central(); // Wait for a central device to connect
   
-  Serial.println("- Discovering peripheral device...");
+  Serial.println("- Discovering central device...");
   
   if (central) { // If a central device is found
     Serial.println("* Connected to central device!");
