@@ -1,19 +1,19 @@
-ON
+ON*
 but
-and
+and*
 not
 or
-LED
+LED*
 sleep
-Wake up
-never mind
-flash
-blink
-toggle
-quick
+Wake up*
+never mind (cancel)*
+flash*
+blink*
+toggle*
+quick*
 fast
 slow
-plus
+plus*
 
 Time:
 minuets, seconds
