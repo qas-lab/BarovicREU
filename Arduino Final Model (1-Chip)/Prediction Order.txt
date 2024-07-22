@@ -1,0 +1,24 @@
+Prediction Order:
+1. Blue
+2. Cyan
+3. Green
+4. LED
+5. Magenta
+6. Off
+7. On
+8. Red
+9. Wake up
+10. White
+11. Yellow
+12. and
+13. blink
+14. cancel
+15. fast
+16. flash
+17. noise
+18. noise2
+19. plus
+20. quick
+21. slow
+22. toggle
+23. unknown
