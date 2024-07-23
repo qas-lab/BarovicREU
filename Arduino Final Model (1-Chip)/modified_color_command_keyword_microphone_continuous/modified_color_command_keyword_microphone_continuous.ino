@@ -87,6 +87,7 @@ void setup()
         ei_printf("ERR: Could not allocate audio buffer (size %d), this could be due to the window length of your model\r\n", EI_CLASSIFIER_RAW_SAMPLE_COUNT);
         return;
     }
+    pinMode(LED_BUILTIN, OUTPUT);
 }
 
 /**
@@ -145,12 +146,8 @@ void loop()
           ei_printf("Guess: %s \n", result.classification[predict].label);
           if(predict == 8)
           {
-            wakeUp = true;
 
-            do
-            {
-              
-            }while(wakeUp == true);
+            wakeUp = true;
           }
         }
 #if EI_CLASSIFIER_HAS_ANOMALY == 1
