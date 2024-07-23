@@ -59,7 +59,7 @@ static bool debug_nn = false; // Set this to true to see e.g. features generated
 static int print_results = -(EI_CLASSIFIER_SLICES_PER_MODEL_WINDOW);
 
 //Global Variable Flags for Commands:
-int color;
+int color, noVoiceCount;
 bool wakeUp, listenMode;
 bool ledKey, ledON, andKey, blinkKey, cancelKey, faskKey, flashKey, plusKey, quickKey, slowKey, toggleKey;
 
@@ -146,7 +146,7 @@ void loop()
           ei_printf("Guess: %s \n", result.classification[predict].label);
           if(predict == 8)
           {
-
+            digitalWrite(LED_BUILTIN, HIGH);
             wakeUp = true;
           }
         }
