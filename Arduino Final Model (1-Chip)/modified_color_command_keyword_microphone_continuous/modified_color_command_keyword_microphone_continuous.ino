@@ -60,7 +60,7 @@ static int print_results = -(EI_CLASSIFIER_SLICES_PER_MODEL_WINDOW);
 
 //Global Variable Flags for Commands:
 int color;
-bool wakeUp;
+bool wakeUp, listenMode;
 bool ledKey, ledON, andKey, blinkKey, cancelKey, faskKey, flashKey, plusKey, quickKey, slowKey, toggleKey;
 
 /**
@@ -143,7 +143,15 @@ void loop()
         if(predict != 30 && predict != 16 && predict != 17 && predict != 22)
         {
           ei_printf("Guess: %s \n", result.classification[predict].label);
+          if(predict == 8)
+          {
+            wakeUp = true;
 
+            do
+            {
+              
+            }while(wakeUp == true);
+          }
         }
 #if EI_CLASSIFIER_HAS_ANOMALY == 1
         ei_printf("    anomaly score: %.3f\n", result.anomaly);
@@ -151,6 +159,20 @@ void loop()
 
         print_results = 0;
     }
+}
+
+int toggleListenMode()
+{
+  if(listenMode == false)
+  {
+    listenMode = true;
+
+  }
+  else if(listenMode == true)
+  {
+    listenMode = false;
+
+  }
 }
 
 /**
