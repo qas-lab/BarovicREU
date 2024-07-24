@@ -63,6 +63,12 @@ int color, noVoiceCount;
 bool wakeUp, listenMode;
 bool ledKey, ledON, andKey, blinkKey, cancelKey, faskKey, flashKey, plusKey, quickKey, slowKey, toggleKey;
 
+//LED Pins
+const int ledRedPin = 22;
+const int ledGreenPin = 24;
+const int ledBluePin = 23;
+
+
 /**
  * @brief      Arduino setup function
  */
@@ -87,7 +93,16 @@ void setup()
         ei_printf("ERR: Could not allocate audio buffer (size %d), this could be due to the window length of your model\r\n", EI_CLASSIFIER_RAW_SAMPLE_COUNT);
         return;
     }
+    //Set built-in LED as outpu
     pinMode(LED_BUILTIN, OUTPUT);
+    //Set LED as outputs
+    pinMode(ledRedPin, OUTPUT);
+    pinMode(ledGreenPin, OUTPUT);
+    pinMode(ledBluePin, OUTPUT);
+    //LEDs OFF by Default
+    analogWrite(ledRedPin, 255);
+    analogWrite(ledGreenPin, 255);
+    analogWrite(ledBluePin, 255);
 }
 
 /**
@@ -248,6 +263,7 @@ void toggleFlags(int predict)
             break;
           }
 }
+
 int toggleListenMode()
 {
   if(listenMode == false)
