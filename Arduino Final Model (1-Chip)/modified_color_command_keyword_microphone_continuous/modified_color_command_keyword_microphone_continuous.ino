@@ -59,12 +59,12 @@ static bool debug_nn = false; // Set this to true to see e.g. features generated
 static int print_results = -(EI_CLASSIFIER_SLICES_PER_MODEL_WINDOW);
 
 //Global Variable Flags for Commands:
-int color = 5, color2 = 5, noVoiceCount = 0;
+int color = 0, color2 = 0, noVoiceCount = 0;
 bool wakeUp, listenMode;
 bool ledKey, ledON, andKey, blinkKey, cancelKey, fastKey, flashKey, plusKey, quickKey, slowKey, toggleKey;
 
 //Plus Specific Commands:
-int colorP = 5, color2P = 5;
+int colorP = 0, color2P = 0;
 bool ledKeyP, ledOnP, andKeyP, blinkKeyP, fastKeyP, flashKeyP, quickKeyP, slowKeyP, toggleKeyP;
 
 //LED Pins
@@ -132,12 +132,6 @@ void loop()
     }
 
     if (++print_results >= (EI_CLASSIFIER_SLICES_PER_MODEL_WINDOW)) {
-        // print the predictions
-        /*
-        ei_printf("Predictions ");
-        ei_printf("(DSP: %d ms., Classification: %d ms., Anomaly: %d ms.)",
-            result.timing.dsp, result.timing.classification, result.timing.anomaly);
-        ei_printf(": \n");
         /*
           CODE AT THIS POINT MODIFIED FOR FUNCTIONALITY
           -> LOOKS FOR THE KEYWORDS AND TURNS ON LED IF HEARD
