@@ -61,11 +61,11 @@ static int print_results = -(EI_CLASSIFIER_SLICES_PER_MODEL_WINDOW);
 //Global Variable Flags for Commands:
 int color = 0, color2 = 0, noVoiceCount = 0;
 bool wakeUp, listenMode;
-bool ledKey, ledON, andKey, blinkKey, cancelKey, fastKey, flashKey, plusKey, quickKey, slowKey, toggleKey;
+bool ledKey, ledON, ledOFF, andKey, blinkKey, cancelKey, fastKey, flashKey, plusKey, quickKey, slowKey, toggleKey;
 
 //Plus Specific Commands:
 int colorP = 0, color2P = 0;
-bool ledKeyP, ledOnP, andKeyP, blinkKeyP, fastKeyP, flashKeyP, quickKeyP, slowKeyP, toggleKeyP;
+bool ledKeyP, ledOnP, ledOffP, andKeyP, blinkKeyP, fastKeyP, flashKeyP, quickKeyP, slowKeyP, toggleKeyP;
 
 //LED Pins
 const int ledRedPin = 22;
@@ -171,6 +171,7 @@ void loop()
         if(noVoiceCount > 20)
         {
           wakeUp =  false;
+          resetFlags();
           digitalWrite(LED_BUILTIN, LOW);
         }
         else if(wakeUp == true)
@@ -191,37 +192,42 @@ void toggleFlags(int predict)
   switch (predict) 
   {
     case 0: //Blue (color = 1)
-      (plusKey) ? ((andKeyP) ? color2P = 1 :  colorP = 1) : ((andKey) ? color2 = 1 : color = 1);
+      (plusKey) ? ((andKeyP) ? color2P = 1 :  colorP = 1) : ((andKey) ? color2 = 1 + color : color = 1);
     break;
     case 1: //Cyan (color = 3)
-      (plusKey) ? ((andKeyP) ? color2P = 3 :  colorP = 3) : ((andKey) ? color2 = 3 : color = 3);
+      (plusKey) ? ((andKeyP) ? color2P = 3 :  colorP = 3) : ((andKey) ? color2 = 3 + color : color = 3);
     break;
     case 2: //Green (color = 2)
-      (plusKey) ? ((andKeyP) ? color2P = 2 :  colorP = 2) : ((andKey) ? color2 = 2 : color = 2);
+      (plusKey) ? ((andKeyP) ? color2P = 2 :  colorP = 2) : ((andKey) ? color2 = 2 + color : color = 2);
     break;
     case 3: //LED (ledKey = true)
-      switchLED();
+      if(ledON || ledOnP) {switchLED(); ledON = false; ledOnP = false;}
+      else if(ledOFF || ledOffP) {switchLED(); ledOFF = false; ledOffP = false;}
+      //blink
+      //flash
+      //toggle
     break;
     case 4: //Magenta (color = 5)
-      (plusKey) ? ((andKeyP) ? color2P = 5 :  colorP = 5) : ((andKey) ? color2 = 5 : color = 5);
+      (plusKey) ? ((andKeyP) ? color2P = 5 :  colorP = 5) : ((andKey) ? color2 = 5 + color : color = 5);
     break;
     case 5: //Off (color = 0)
-      (plusKey) ? ((andKeyP) ? color2P = 0 :  colorP = 0) : ((andKey) ? color2 = 0 : color = 0);
+      (plusKey) ? ((andKeyP) ? color2P = 0 :  colorP = 0) : ((andKey) ? color2 = 0 + color : color = 0);
+      (plusKey) ? ledOffP = true : ledOFF = true;
     break;
     case 6: //On (ledON = true)
-              
+      (plusKey) ? ledOnP = true : ledON = true;
     break;
     case 7: //Red (color = 4)
-      (plusKey) ? ((andKeyP) ? color2P = 4 :  colorP = 4) : ((andKey) ? color2 = 4 : color = 4);
+      (plusKey) ? ((andKeyP) ? color2P = 4 :  colorP = 4) : ((andKey) ? color2 = 4 + color : color = 4);
     break;
     case 8: //Wake Up
       wakeUp = true;
     break;
     case 9: //White (color = 7)
-      (plusKey) ? ((andKeyP) ? color2P = 7 :  colorP = 7) : ((andKey) ? color2 = 7 : color = 7);
+      (plusKey) ? ((andKeyP) ? color2P = 7 :  colorP = 7) : ((andKey) ? color2 = 7 + color : color = 7);
     break;
     case 10: //Yellow (color = 6)
-      (plusKey) ? ((andKeyP) ? color2P = 6 :  colorP = 6) : ((andKey) ? color2 = 6 : color = 6);
+      (plusKey) ? ((andKeyP) ? color2P = 6 :  colorP = 6) : ((andKey) ? color2 = 6 + color : color = 6);
     break;
     case 11: //and (andKey = true)
       (plusKey) ? andKeyP = true : andKey = true;
@@ -263,9 +269,14 @@ void toggleFlags(int predict)
 }
 void resetFlags()
 {
-  color = 5; color2 = 5; noVoiceCount = 0; 
-  ledKey = false; ledON = false; andKey = false; blinkKey = false; cancelKey = false; 
+  //Base
+  color = 0; color2 = 0; noVoiceCount = 0;
+  ledKey = false; ledON = false; andKey = false; blinkKey = false; cancelKey = false; ledOFF = false;
   fastKey = false; flashKey = false; plusKey = false; quickKey = false; slowKey = false; toggleKey = false;
+  //Plus
+  colorP = 0; color2P = 0;
+  ledKeyP = false; ledOnP = false; andKeyP = false; blinkKeyP = false; ledOffP = false;
+  fastKeyP = false; flashKeyP = false; quickKeyP = false; slowKeyP = false; toggleKeyP = false;
 }
 void switchLED()
 {
@@ -310,13 +321,13 @@ void switchLED()
     analogWrite(ledRedPin, 0);
     analogWrite(ledGreenPin, 0);
     analogWrite(ledBluePin, 0);
-
   }
   else
   {
-    ei_printf("No Read \n");
+    analogWrite(ledRedPin, 0);
+    analogWrite(ledGreenPin, 0);
+    analogWrite(ledBluePin, 0);  }
   }
-}
 int toggleListenMode()
 {
   if(listenMode == false)
