@@ -63,6 +63,10 @@ int color = 5, color2 = 5, noVoiceCount = 0;
 bool wakeUp, listenMode;
 bool ledKey, ledON, andKey, blinkKey, cancelKey, fastKey, flashKey, plusKey, quickKey, slowKey, toggleKey;
 
+//Plus Specific Commands:
+int colorP = 5, color2P = 5;
+bool ledKeyP, ledOnP, andKeyP, blinkKeyP, fastKeyP, flashKeyP, quickKeyP, slowKeyP, toggleKeyP;
+
 //LED Pins
 const int ledRedPin = 22;
 const int ledGreenPin = 24;
@@ -179,7 +183,7 @@ void loop()
         {
           //Start Chip Logic
           toggleFlags(predict);
-          
+          if(cancelKey == true) resetFlags();
         }
 #if EI_CLASSIFIER_HAS_ANOMALY == 1
         ei_printf("    anomaly score: %.3f\n", result.anomaly);
@@ -191,82 +195,88 @@ void loop()
 void toggleFlags(int predict)
 {
   switch (predict) 
-          {
-            case 0: //Blue (color = 1)
+  {
+    case 0: //Blue (color = 1)
+      (plusKey) ? ((andKeyP) ? color2P = 1 :  colorP = 1) : ((andKey) ? color2 = 1 : color = 1);
+    break;
+    case 1: //Cyan (color = 3)
+      (plusKey) ? ((andKeyP) ? color2P = 3 :  colorP = 3) : ((andKey) ? color2 = 3 : color = 3);
+    break;
+    case 2: //Green (color = 2)
+      (plusKey) ? ((andKeyP) ? color2P = 2 :  colorP = 2) : ((andKey) ? color2 = 2 : color = 2);
+    break;
+    case 3: //LED (ledKey = true)
+      switchLED();
+    break;
+    case 4: //Magenta (color = 5)
+      (plusKey) ? ((andKeyP) ? color2P = 5 :  colorP = 5) : ((andKey) ? color2 = 5 : color = 5);
+    break;
+    case 5: //Off (color = 0)
+      (plusKey) ? ((andKeyP) ? color2P = 0 :  colorP = 0) : ((andKey) ? color2 = 0 : color = 0);
+    break;
+    case 6: //On (ledON = true)
               
-            break;
-            case 1: //Cyan (color = 3)
+    break;
+    case 7: //Red (color = 4)
+      (plusKey) ? ((andKeyP) ? color2P = 4 :  colorP = 4) : ((andKey) ? color2 = 4 : color = 4);
+    break;
+    case 8: //Wake Up
+      wakeUp = true;
+    break;
+    case 9: //White (color = 7)
+      (plusKey) ? ((andKeyP) ? color2P = 7 :  colorP = 7) : ((andKey) ? color2 = 7 : color = 7);
+    break;
+    case 10: //Yellow (color = 6)
+      (plusKey) ? ((andKeyP) ? color2P = 6 :  colorP = 6) : ((andKey) ? color2 = 6 : color = 6);
+    break;
+    case 11: //and (andKey = true)
+      (plusKey) ? andKeyP = true : andKey = true;
+    break;
+    case 12: //blink (blinkKey = true)
+      (plusKey) ? blinkKeyP = true : blinkKey = true;
+    break;
+    case 13: //cancel (cancelKey = true)
+      cancelKey = true;
+    break;
+    case 14: //fast (fastKey = true)
+      (plusKey) ? fastKeyP = true : fastKey = true;
+    break;
+    case 15: //flash (flashKey = true)
+      (plusKey) ? flashKeyP = true : flashKey = true;
+    break;
+    case 16: //noise
+             
+    break;
+    case 17: //noise2
               
-            break;
-            case 2: //Green (color = 2)
+    break;
+    case 18: //plus (plusKey = true)
+      plusKey = true;
+    break;
+    case 19: //quick (quickKey = true)
+      (plusKey) ? quickKeyP = true : quickKey = true;
+    break;
+    case 20: //slow (slowKey = true)
+      (plusKey) ? slowKeyP = true : slowKey = true;
+    break;
+    case 21: //toggle (toggleKey = true)
+      (plusKey) ? toggleKeyP = true : toggleKey = true;
+    break;
+    case 22: //unknown
               
-            break;
-            case 3: //LED (ledKey = true)
-              
-            break;
-            case 4: //Magenta (color = 5)
-              
-            break;
-            case 5: //Off (color = 0)
-              
-            break;
-            case 6: //On (ledON = true)
-              
-            break;
-            case 7: //Red (color = 4)
-              
-            break;
-            case 8: //Wake Up
-              
-            break;
-            case 9: //White (color = 7)
-              
-            break;
-            case 10: //Yellow (color = 6)
-              
-            break;
-            case 11: //and (andKey = true)
-              
-            break;
-            case 12: //blink (blinkKey = true)
-              
-            break;
-            case 13: //cancel (cancelKey = true)
-              
-            break;
-            case 14: //fast (fastKey = true)
-              
-            break;
-            case 15: //flash (flashKey = true)
-              
-            break;
-            case 16: //noise
-              
-            break;
-            case 17: //noise2
-              
-            break;
-            case 18: //plus (plusKey = true)
-              plusKey = true;
-            break;
-            case 19: //quick (quickKey = true)
-              
-            break;
-            case 20: //slow (slowKey = true)
-              
-            break;
-            case 21: //toggle (toggleKey = true)
-              
-            break;
-            case 22: //unknown
-              
-            break;
-          }
+    break;
+  }
 }
-void switchLED(bool mode)
+void resetFlags()
 {
-  //If (mode == true) : localColor = color2
-  int localColor = (mode) ? color2 : color;
+  color = 5; color2 = 5; noVoiceCount = 0; 
+  ledKey = false; ledON = false; andKey = false; blinkKey = false; cancelKey = false; 
+  fastKey = false; flashKey = false; plusKey = false; quickKey = false; slowKey = false; toggleKey = false;
+}
+void switchLED()
+{
+  //Select Correct color variable
+  int localColor = (plusKey) ? ((andKeyP) ? color2P : colorP) : ((andKey) ? color2 : color);
 
   //LED off (to change colors)
   analogWrite(ledRedPin, 255);
