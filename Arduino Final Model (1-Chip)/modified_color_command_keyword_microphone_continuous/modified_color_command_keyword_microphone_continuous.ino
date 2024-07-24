@@ -155,13 +155,15 @@ void loop()
         {
           noVoiceCount++;
         }
-        if(noVoiceCount == 200)
+        if(noVoiceCount > 20)
         {
           wakeUp =  false;
+          digitalWrite(LED_BUILTIN, LOW);
         }
         else if(wakeUp == true)
         {
           //Start Chip Logic
+          
         }
 #if EI_CLASSIFIER_HAS_ANOMALY == 1
         ei_printf("    anomaly score: %.3f\n", result.anomaly);
