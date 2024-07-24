@@ -59,9 +59,9 @@ static bool debug_nn = false; // Set this to true to see e.g. features generated
 static int print_results = -(EI_CLASSIFIER_SLICES_PER_MODEL_WINDOW);
 
 //Global Variable Flags for Commands:
-int color, noVoiceCount;
+int color = 5, color2 = 5, noVoiceCount = 0;
 bool wakeUp, listenMode;
-bool ledKey, ledON, andKey, blinkKey, cancelKey, faskKey, flashKey, plusKey, quickKey, slowKey, toggleKey;
+bool ledKey, ledON, andKey, blinkKey, cancelKey, fastKey, flashKey, plusKey, quickKey, slowKey, toggleKey;
 
 //LED Pins
 const int ledRedPin = 22;
@@ -192,78 +192,127 @@ void toggleFlags(int predict)
 {
   switch (predict) 
           {
-            case 0:
+            case 0: //Blue (color = 1)
               
             break;
-            case 1:
+            case 1: //Cyan (color = 3)
               
             break;
-            case 2:
+            case 2: //Green (color = 2)
               
             break;
-            case 3:
+            case 3: //LED (ledKey = true)
               
             break;
-            case 4:
+            case 4: //Magenta (color = 5)
               
             break;
-            case 5:
+            case 5: //Off (color = 0)
               
             break;
-            case 6:
+            case 6: //On (ledON = true)
               
             break;
-            case 7:
+            case 7: //Red (color = 4)
               
             break;
-            case 8:
+            case 8: //Wake Up
               
             break;
-            case 9:
+            case 9: //White (color = 7)
               
             break;
-            case 10:
+            case 10: //Yellow (color = 6)
               
             break;
-            case 11:
+            case 11: //and (andKey = true)
               
             break;
-            case 12:
+            case 12: //blink (blinkKey = true)
               
             break;
-            case 13:
+            case 13: //cancel (cancelKey = true)
               
             break;
-            case 14:
+            case 14: //fast (fastKey = true)
               
             break;
-            case 15:
+            case 15: //flash (flashKey = true)
               
             break;
-            case 16:
+            case 16: //noise
               
             break;
-            case 17:
+            case 17: //noise2
               
             break;
-            case 18:
+            case 18: //plus (plusKey = true)
+              plusKey = true;
+            break;
+            case 19: //quick (quickKey = true)
               
             break;
-            case 19:
+            case 20: //slow (slowKey = true)
               
             break;
-            case 20:
+            case 21: //toggle (toggleKey = true)
               
             break;
-            case 21:
-              
-            break;
-            case 22:
+            case 22: //unknown
               
             break;
           }
 }
+void switchLED(bool mode)
+{
+  //If (mode == true) : localColor = color2
+  int localColor = (mode) ? color2 : color;
 
+  //LED off (to change colors)
+  analogWrite(ledRedPin, 255);
+  analogWrite(ledGreenPin, 255);
+  analogWrite(ledBluePin, 255);
+  //Color Switch Protocall
+  if(localColor == 0); //Off
+  else if(localColor == 1) //Blue
+  {
+    analogWrite(ledBluePin, 0);
+  }
+  else if(localColor == 2) //Green
+  {
+    analogWrite(ledGreenPin, 0);
+  }
+  else if(localColor == 3) //Cyan
+  {
+    analogWrite(ledGreenPin, 0);
+    analogWrite(ledBluePin, 0);
+  }
+  else if(localColor == 4) //Red
+  {
+    analogWrite(ledRedPin, 0);
+  }
+  else if(localColor == 5) //Magenta
+  {
+    analogWrite(ledRedPin, 0);
+    analogWrite(ledBluePin, 0);
+  }
+  else if(localColor == 6) //Yellow
+  {
+    analogWrite(ledRedPin, 0);
+    analogWrite(ledGreenPin, 0);
+  }
+  else if(localColor == 7) //White
+  {
+    analogWrite(ledRedPin, 0);
+    analogWrite(ledGreenPin, 0);
+    analogWrite(ledBluePin, 0);
+
+  }
+  else
+  {
+    ei_printf("No Read \n");
+  }
+}
 int toggleListenMode()
 {
   if(listenMode == false)
