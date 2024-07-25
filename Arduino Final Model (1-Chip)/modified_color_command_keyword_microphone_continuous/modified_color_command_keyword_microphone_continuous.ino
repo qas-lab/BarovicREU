@@ -192,13 +192,13 @@ void toggleFlags(int predict)
   switch (predict) 
   {
     case 0: //Blue (color = 1)
-      (plusKey) ? ((andKeyP) ? color2P = 1 :  colorP = 1) : ((andKey) ? color2 = 1 + color : color = 1);
+      (plusKey) ? ((andKeyP) ? color2P = 1 + colorP :  colorP = 1) : ((andKey) ? color2 = 1 + color : color = 1);
     break;
     case 1: //Cyan (color = 3)
-      (plusKey) ? ((andKeyP) ? color2P = 3 :  colorP = 3) : ((andKey) ? color2 = 3 + color : color = 3);
+      (plusKey) ? ((andKeyP) ? color2P = 3 + colorP :  colorP = 3) : ((andKey) ? color2 = 3 + color : color = 3);
     break;
     case 2: //Green (color = 2)
-      (plusKey) ? ((andKeyP) ? color2P = 2 :  colorP = 2) : ((andKey) ? color2 = 2 + color : color = 2);
+      (plusKey) ? ((andKeyP) ? color2P = 2 + colorP:  colorP = 2) : ((andKey) ? color2 = 2 + color : color = 2);
     break;
     case 3: //LED (ledKey = true)
       if(ledON || ledOnP) {switchLED(); ledON = false; ledOnP = false;}
@@ -208,26 +208,26 @@ void toggleFlags(int predict)
       //toggle
     break;
     case 4: //Magenta (color = 5)
-      (plusKey) ? ((andKeyP) ? color2P = 5 :  colorP = 5) : ((andKey) ? color2 = 5 + color : color = 5);
+      (plusKey) ? ((andKeyP) ? color2P = 5 + colorP:  colorP = 5) : ((andKey) ? color2 = 5 + color : color = 5);
     break;
     case 5: //Off (color = 0)
-      (plusKey) ? ((andKeyP) ? color2P = 0 :  colorP = 0) : ((andKey) ? color2 = 0 + color : color = 0);
+      (plusKey) ? ((andKeyP) ? color2P = 0 + colorP:  colorP = 0) : ((andKey) ? color2 = 0 + color : color = 0);
       (plusKey) ? ledOffP = true : ledOFF = true;
     break;
     case 6: //On (ledON = true)
       (plusKey) ? ledOnP = true : ledON = true;
     break;
     case 7: //Red (color = 4)
-      (plusKey) ? ((andKeyP) ? color2P = 4 :  colorP = 4) : ((andKey) ? color2 = 4 + color : color = 4);
+      (plusKey) ? ((andKeyP) ? color2P = 4 + colorP:  colorP = 4) : ((andKey) ? color2 = 4 + color : color = 4);
     break;
     case 8: //Wake Up
       wakeUp = true;
     break;
     case 9: //White (color = 7)
-      (plusKey) ? ((andKeyP) ? color2P = 7 :  colorP = 7) : ((andKey) ? color2 = 7 + color : color = 7);
+      (plusKey) ? ((andKeyP) ? color2P = 7 + colorP:  colorP = 7) : ((andKey) ? color2 = 7 + color : color = 7);
     break;
     case 10: //Yellow (color = 6)
-      (plusKey) ? ((andKeyP) ? color2P = 6 :  colorP = 6) : ((andKey) ? color2 = 6 + color : color = 6);
+      (plusKey) ? ((andKeyP) ? color2P = 6 + colorP:  colorP = 6) : ((andKey) ? color2 = 6 + color : color = 6);
     break;
     case 11: //and (andKey = true)
       (plusKey) ? andKeyP = true : andKey = true;
