@@ -4,14 +4,14 @@ Prediction Order:
 3. Green 		(i)
 4. LED
 5. Magenta 		(i)
-6. Off
-7. On
+6. Off			(i) [some bugs]
+7. On			(i)
 8. Red 			(i)
 9. Wake up 		(i)
 10. White 		(i)
 11. Yellow 		(i)
-12. and
-13. blink
+12. and			(i)
+13. blink		
 14. cancel 		(i)
 15. fast
 16. flash
