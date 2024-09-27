@@ -16,11 +16,13 @@ git clone https://github.com/qas-lab/BarovicREU.git
 ## Node.js
 - Download [Node.js](https://nodejs.org/en/)
 ## Arduino Nano 33 BLE Sense
-- Purchase two [Arduino Nano 33 BLE Sense Rev 2](https://store-usa.arduino.cc/products/nano-33-ble-sense-rev2) Chips
+- Purchase [Arduino Nano 33 BLE Sense Rev 2](https://store-usa.arduino.cc/products/nano-33-ble-sense-rev2) Chip
   - [Arduino Nano 33 BLE Sense](https://store-usa.arduino.cc/products/arduino-nano-33-ble-sense) will also work
 - [Hardware Schematic](https://docs.arduino.cc/resources/schematics/ABX00069-schematics.pdf)
 - [Datasheet](https://docs.arduino.cc/resources/datasheets/ABX00069-datasheet.pdf)
 - [Pinout](https://docs.arduino.cc/resources/pinouts/ABX00069-full-pinout.pdf)
+
+## Using the Model
 
 ----------
 ## Project Structure
