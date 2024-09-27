@@ -2,7 +2,7 @@ Prediction Order:
 1. Blue 		(i)
 2. Cyan 		(i)
 3. Green 		(i)
-4. LED
+4. LED			(p)
 5. Magenta 		(i)
 6. Off			(i) [some bugs]
 7. On			(i)
