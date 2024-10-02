@@ -50,6 +50,7 @@ git clone https://github.com/qas-lab/BarovicREU.git
     - Two files present: 'colors' and 'commands'
       - Two file types Json and Wav
         - Json is recommended while uploading to Edge Impulse. Wav data is helpful for use outside of edge impulse.
+- Note: Only the web-based Edge Impulse application is required to follow these steps
 ----------
 ## Project Structure
 ```.
