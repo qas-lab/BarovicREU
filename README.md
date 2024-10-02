@@ -40,8 +40,16 @@ git clone https://github.com/qas-lab/BarovicREU.git
       - Wake up should turn on the yellow LED on the chip (this is listening mode)
       - 'On', 'Red', and 'LED' should make the RGB LED red (may require a few tries in order to function properly. Watch the serial monitor to see what is being heard by the microchip)
   - If any errors occur check the library files imported from Arduino.
+- Note: Arduino CLI and Edge Impulse are not required in order to use the code in this way
 ## Using the Dataset
-
+- Datasets are located in the 'Datasets' folder
+- Open Edge Impulse browser app
+  - Create a new project
+    - Data acquisition > CSV Wizard > Choose File > [Add Dataset file] > upload file
+      - Repeat for each desired file, then let edge impulse auto-split the datasets
+    - Two files present: 'colors' and 'commands'
+      - Two file types Json and Wav
+        - Json is recommended while uploading to Edge Impulse. Wav data is helpful for use outside of edge impulse.
 ----------
 ## Project Structure
 ```.
