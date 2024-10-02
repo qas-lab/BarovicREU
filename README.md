@@ -21,8 +21,26 @@ git clone https://github.com/qas-lab/BarovicREU.git
 - [Hardware Schematic](https://docs.arduino.cc/resources/schematics/ABX00069-schematics.pdf)
 - [Datasheet](https://docs.arduino.cc/resources/datasheets/ABX00069-datasheet.pdf)
 - [Pinout](https://docs.arduino.cc/resources/pinouts/ABX00069-full-pinout.pdf)
-
+------------
 ## Using the Model
+- Final prototype located in Arduino Final Model (1-Chip)
+- Download the .zip file
+  - This .zip file is a library folder for the Arduino compiler (do not unzip)
+  - Add this library through the Arduino IDE via:
+    - Sketch > Include Library > [Add .ZIP File...]
+- Download the 'modified_color_command_keyword_microphone_continuous' file
+  - Open the .ino file with the Arduino IDE (Compiler)
+    - Attach Arduino Nano 33 BLE sense chip to the computer (make sure Arduino recognizes the chip & port)
+    - Compile, Verify, and Flash the code to the chip
+      - compiling the code will take a few minutes the first time it is done
+    - Open the serial monitor
+      - Predictions should now be displayed
+  - 'Wake up' turns on the listening mode of the device, 'LED' executes the currently heard commands
+    - Try: 'Wake up', 'On', 'Red', 'LED'
+      - Wake up should turn on the yellow LED on the chip (this is listening mode)
+      - 'On', 'Red', and 'LED' should make the RGB LED red (may require a few tries in order to function properly. Watch the serial monitor to see what is being heard by the microchip)
+  - If any errors occur check the library files imported from Arduino.
+## Using the Dataset
 
 ----------
 ## Project Structure
