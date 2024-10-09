@@ -25,3 +25,4 @@ Prediction Order:
 
 Legend:
 (i) - logic implemented
+(p) - partial logic implemented
