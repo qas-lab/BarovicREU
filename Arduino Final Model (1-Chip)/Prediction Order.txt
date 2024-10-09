@@ -22,3 +22,6 @@ Prediction Order:
 21. slow
 22. toggle
 23. unknown 		(i)
+
+Legend:
+(i) - logic implemented
