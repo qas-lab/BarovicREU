@@ -1,5 +1,4 @@
 # Natural Language Processing with TinyML
-#### Contributors: Andrew Barovic
 ------------
 ## Getting Started
 ```bash
